@@ -1,0 +1,544 @@
+# reto5nalejandro753
+Codigo Java 4753
+package utp.misiontic2022.c2.p41.reto4;
+
+import utp.misiontic2022.c2.p41.reto4.vista.VistaRequerimientos;
+import java.sql.SQLException;
+
+/**
+ *
+ * @author jbaldovino
+ */
+public class App {
+
+    /**
+     * @param args the command line arguments
+     * @throws SQLException
+     */
+    public static void main(String[] args) throws SQLException {
+        System.out.println("Requerimiento 1");
+        VistaRequerimientos.requerimiento1();
+
+        System.out.println("\nRequerimiento 2");
+        VistaRequerimientos.requerimiento2();
+
+        System.out.println("\nRequerimiento 3");
+        VistaRequerimientos.requerimiento3();
+    }
+
+}
+package utp.misiontic2022.c2.p41.reto4;
+
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_2;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_1;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_3;
+import utp.misiontic2022.c2.p41.reto4.modelo.DAO.Requerimiento_3Dao;
+import utp.misiontic2022.c2.p41.reto4.modelo.DAO.Requerimiento_2Dao;
+import utp.misiontic2022.c2.p41.reto4.modelo.DAO.Requerimiento_1Dao;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class ControladorRequerimientos {
+    private final Requerimiento_1Dao requerimiento1;
+    private final Requerimiento_2Dao requerimiento2;
+    private final Requerimiento_3Dao requerimiento3;    
+    
+    public ControladorRequerimientos() {
+        this.requerimiento1 = new Requerimiento_1Dao();
+        this.requerimiento2 = new Requerimiento_2Dao();
+        this.requerimiento3 = new Requerimiento_3Dao();
+    }
+
+    public ArrayList<Requerimiento_1> consultarRequerimiento1() throws SQLException{
+        return this.requerimiento1.requerimiento1();
+    }
+
+    public ArrayList<Requerimiento_2> consultarRequerimiento2() throws SQLException{
+        return this.requerimiento2.requerimiento2();
+    }
+
+    public ArrayList<Requerimiento_3> consultarRequerimiento3() throws SQLException{
+        return this.requerimiento3.requerimiento3();
+    }
+}
+package utp.misiontic2022.c2.p41.reto4.modelo.DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class Requerimiento_1Dao {
+    Connection cnn;
+}
+    public Requerimiento_1Dao() {
+        try {
+            this.cnn = JDBCUtilities.getConnection();
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
+    }
+
+    public void close() throws SQLException{
+        cnn.close();
+    }
+
+    public class Requerimiento_1Dao {
+        public ArrayList<Requerimiento_1> consultar() {
+            ArrayList<Requerimiento_1> res = new ArrayList<>();
+
+                String consulta = "select count(l.ID_Lider) Nro_Lideres, "+
+                                  "l.Ciudad_Residencia"+
+                                  " from Lider l "+
+                                  "group by l.Ciudad_Residencia;";
+            try{
+                PreparedStatement ps = cnn.prepareStatement(consulta);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    Requerimiento_1 rq = new Requerimiento_1(
+                            rs.getInt("Nro_Lideres"),
+                            rs.getString("Ciudad_Residencia")
+                    );
+                    res.add(rq);
+                    //res.add(new Requerimiento_1(rs.getInt("numLideres")),rs.getString("Ciudad_Residencia"));
+                }
+            }catch(SQLException e){
+                System.err.println("Error consultando Número de lideres por ciudad: "+e);
+
+            }
+            return res;
+        }
+    }
+package utp.misiontic2022.c2.p41.reto4.modelo.DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+        
+public class Requerimiento_2Dao {
+    Connection cnn;
+}
+    public Requerimiento_2Dao() {
+        try {
+            this.cnn = JDBCUtilities.getConnection();
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
+    }
+
+public class Requerimiento_2Dao {
+    public ArrayList<Requerimiento_2> Requerimiento2() {
+        ArrayList<Requerimiento_2> res = new ArrayList<>();
+
+            String consulta = "select c.ID_Proyecto, c.Proveedor, c.Pagado, mc.ID_MaterialConstruccion, mc.Nombre_Material"+
+             " from compra c "+
+            "inner join MaterialConstruccion mc on c.ID_MaterialConstruccion = mc.ID_MaterialConstruccion "+
+            "where c.Proveedor = 'Homecenter' and c.Pagado = 'No' order by c.ID_Proyecto;";
+        try{
+            PreparedStatement ps = cnn.prepareStatement(consulta);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                res.add(
+                new Requerimiento_2(
+                    rs.getInt("ID_Proyecto")),
+                    rs.getString("Proveedor")),
+                    rs.getString("Pagado")),
+                    rs.getInt("ID_MaterialConstruccion")),
+                    rs.getString("Nombre_Material")),
+            }
+        }catch(SQLException e){
+            System.err.println("Error consultando Materiales no pagados al proveedor Homecenter: "+e);
+        
+        }
+        return resultado;
+    }
+}
+package utp.misiontic2022.c2.p41.reto4.modelo.DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+public class Requerimiento_3Dao {
+    Connection cnn;
+}
+    public Requerimiento_3Dao() {
+        try {
+            this.cnn = JDBCUtilities.getConnection();
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
+    }
+
+public class Requerimiento_3Dao {
+    public ArrayList<Requerimiento_3> consultar() {
+        ArrayList<Requerimiento_3> res = new ArrayList<>();
+
+            String consulta = "select distinct l.ID_Lider, l.Nombre, l.Primer_Apellido, l.Segundo_Apellido"+
+                              " from proyecto p "+
+                              "inner join lider l on p.ID_Lider = l.ID_Lider";
+        try {      
+            PreparedStatement ps = cnn.prepareStatement(consulta);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                res.add(
+                    new Requerimiento_3();
+                        rs.getInt("ID_Lider")),
+                        rs.getString("Nombre")),
+                        rs.getString("Primer_Apellido")),
+                        rs.getString("Segundo_Apellido")),
+                        resultado.add(requerimiento);
+                )
+            }
+        }catch(SQLException e){
+            System.err.println("Error consultando Proyectos que deben dinero por compra de materiales: "+e);
+        
+        }
+        return res;
+    }    
+}
+package utp.misiontic2022.c2.p41.reto4.modelo.vo;
+
+public class Requerimiento_1 {
+    private int nro_Lideres;
+    private String ciudad_Residencia;  
+    
+    public Requerimiento_1(){
+        
+    }
+
+    public Requerimiento_1(int nro_Lideres, String ciudad_Residencia) {
+        this.nro_Lideres = nro_Lideres;
+        this.ciudad_Residencia = ciudad_Residencia;
+    }
+
+    public int getNumLideres() {
+        return nro_Lideres;
+    }
+
+    public void setNum_Lideres(int nro_Lideres) {
+        this.nro_Lideres = nro_Lideres;
+    }
+
+    public String getCiudad_Residencia() {
+        return ciudad_Residencia;
+    }
+
+    public void setCiudadResidencia(String ciudadResidencia) {
+        this.ciudad_Residencia = ciudad_Residencia;
+    }
+}
+package utp.misiontic2022.c2.p41.reto4.modelo.vo;
+
+public class Requerimiento_2 {
+    private int id_Proyecto;
+    private String proveedor;
+    private String pagado;
+    private int id_Material_Construccion;
+    private String material_Construccion;
+
+    public Requerimiento_2() {
+
+    }
+
+    public Requerimiento_2(int idProyecto, String proveedor, String pagado, int idMaterialConstruccion,
+            String materialConstruccion) {
+        this.id_Proyecto = id_Proyecto;
+        this.proveedor = proveedor;
+        this.pagado = pagado;
+        this.id_Material_Construccion = id_Material_Construccion;
+        this.material_Construccion = material_Construccion;
+    }
+
+    public int getIdProyecto() {
+        return id_Proyecto;
+    }
+
+    public void setIdProyecto(int idProyecto) {
+        this.id_Proyecto = idProyecto;
+    }
+
+    public String getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(String proveedor) {
+        this.proveedor = proveedor;
+    }
+
+    public String getPagado() {
+        return pagado;
+    }
+
+    public void setPagado(String pagado) {
+        this.pagado = pagado;
+    }
+
+    public int getIdMaterialConstruccion() {
+        return id_Material_Construccion;
+    }
+
+    public void setIdMaterialConstruccion(int idMaterialConstruccion) {
+        this.id_Material_Construccion = idMaterialConstruccion;
+    }
+
+    public String getMaterialConstruccion() {
+        return material_Construccion;
+    }
+
+    public void setMaterialConstruccion(String materialConstruccion) {
+        this.material_Construccion = materialConstruccion;
+    } 
+}
+package utp.misiontic2022.c2.p41.reto4.modelo.vo;
+
+public class Requerimiento_3 {
+    private int id_Lider;
+    private String nombre;
+    private String primer_Apellido;
+    private String segundo_Apellido;
+    
+    public Requerimiento_3() {
+    }
+
+    public Requerimiento_3(int id_Lider, String nombre, String primer_Apellido, String segundo_Apellido) {
+        this.id_Lider = id_Lider;
+        this.nombre = nombre;
+        this.primer_Apellido = primer_Apellido;
+        this.segundo_Apellido = segundo_Apellido;
+    }
+
+    public int getIdLider() {
+        return id_Lider;
+    }
+
+    public void setIdLider(int idLider) {
+        this.id_Lider = id_Lider;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getPrimerApellido() {
+        return primer_Apellido;
+    }
+
+    public void setPrimerApellido(String primerApellido) {
+        this.primer_Apellido = primer_Apellido;
+    }
+
+    public String getSegundoApellido() {
+        return segundo_Apellido;
+    }
+
+    public void setSegundoApellido(String segundoApellido) {
+        this.segundo_Apellido = segundo_Apellido;
+    }
+}
+package utp.misiontic2022.c2.p41.reto4.util;
+
+utp.misiontic2022.c2.p41.reto4.utilpackage utp.misiontic2022.c2.p41.reto4.util;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class JDBCUtilities {
+    private static final String UBICACION_BD = "ProyectosConstruccion.db";
+
+    public static Connection getConnection() {
+        String url = "jdbc:sqlite:" + UBICACION_BD;
+        try (
+        return DriverManager.getConnection(url);
+    } catch (Exception e) {
+        return null;
+    }
+}
+
+    public static boolean estaVacia(){
+        File archivo = new File(JDBUtilities.UBICACION_BD);
+        return archivo.length() == 0;
+    }
+package utp.misiontic2022.c2.p41.reto4.util;
+
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_3Dao;
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_2Dao;
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_1Dao;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_1;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_2;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_3;
+
+public class Requerimientos1_Controller {
+    private Requerimiento_1Dao ctrl;
+
+    public Requerimientos1_Controller() {
+        this.ctrl = new Requerimiento_1Dao();
+    }
+    
+    public ArrayList<Requerimiento_1> consultar(){
+        return this.ctrl.consultar();
+    }
+
+    public void close() throws SQLException{
+        this.ctrl.close();
+    }
+}
+package utp.misiontic2022.c2.p41.reto4.util;
+
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_3Dao;
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_2Dao;
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_1Dao;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_1;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_2;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_3;
+
+public class Requerimientos2_Controller {
+    private Requerimiento_2Dao ctrl;
+
+    public Requerimientos2_Controller() {
+        this.ctrl = new Requerimiento_2Dao();
+    }
+    
+    public ArrayList<Requerimiento_2> consultar() throws SQLException{
+        return this.ctrl.consultar();
+    }
+    
+    public void close() throws SQLException{
+        this.ctrl.close();
+    }
+}
+package utp.misiontic2022.c2.p41.reto4.util;
+
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_3Dao;
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_2Dao;
+import utp.misiontic2022.c2.p41.reto4.modeloDAO.Requerimiento_1Dao;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_1;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_2;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_3;
+
+public class Requerimientos3_Controller {
+    private Requerimiento_3Dao ctrl;    
+    
+    public Requerimientos3_Controller() {
+        this.ctrl = new Requerimiento_3Dao();
+    }
+    
+    public ArrayList<Requerimiento_3> consultar(){
+        return this.ctrl.consultar();
+    }
+    
+    public void close() throws SQLException{
+        this.ctrl.close(); 
+    }
+}
+package utp.misiontic2022.c2.p41.reto4.vista;
+import utp.misiontic2022.c2.p41.reto4.util.ControladorRequerimientos;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_1;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_2;
+import utp.misiontic2022.c2.p41.reto4.modelo.vo.Requerimiento_3;
+
+public class VistaRequerimientos {
+    Scanner sc;
+        
+        
+    public class VistaRequerimientos {
+            sc = new Scanner(System.in);
+    }
+    
+    public void menu() {
+        var opcion =1;
+        while (opcion !=0){
+            System.out.printIn("============");
+            System.out.printIn("Asociacion H&L Constructores");
+            System.out.printIn("1 - Numero Lideres por ciudad");
+            System.out.printIn("2 - Materiales sin cancelar a Homecenter");
+            System.out.printIn("3 - Lider y proyectos con deuda");
+            System.out.printIn("0 - Finalizar");
+            try (
+                opcion = Integer.valueOf(sc.nextIn());
+            } catch (Exception e) {
+                opcion = 9;
+            }
+            switch (opcion){
+                case 1;
+                    ejecutarRequerimiento1();
+                    break;
+                case 2;
+                    ejecutarRequerimiento2();
+                    break;
+                case 3;
+                    ejecutarRequerimiento3();
+                    break;
+                }
+            sc.close();
+            }  
+    public static final ControladorRequerimientos controlador = new ControladorRequerimientos();
+
+    public void ejecutarRequerimiento1() {
+        try {
+            Requerimiento1_controller ctrl = new Requerimiento1_controller();
+            ArrayList<Requerimiento_1> resultado = ctrl.consultar();
+            ctrl.close();
+            System.out.println("Nro_Lideres Ciudad_Residencia");
+            for(Requerimiento_1 rq : resultado){
+                System.out.println(rq.getNro_Lideres() + " " + rq.getCiudad_Residencia());                 
+            }
+        } catch (Exception e) {
+            System.err.println("Error "+e);
+        }
+    }
+
+    public void ejecutarRequerimiento2() {
+        ArrayList<Requerimiento_2> materialesNoPagados = controlador.consultarRequerimiento2();
+
+        //Encabezado del resultado
+        System.out.println("ID_Proyecto Proveedor Pagado  ID_MaterialConstruccion  Nombre_Material");
+        try {
+            for(Requerimiento_2 requerimiento : materialesNoPagados){
+                System.out.println(requerimiento.getIdProyecto()+ "  " +
+                                   requerimiento.getProveedor()+ "  " +
+                                   requerimiento.getPagado()+ "  " +
+                                   requerimiento.getIdMaterialConstruccion()+ "  " +
+                                   requerimiento.getMaterialConstruccion());
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public static void requerimiento3()throws SQLException{
+        ArrayList<Requerimiento_3> lideresDebenDinero = controlador.consultarRequerimiento3();
+
+        //Encabezado del resultado
+        System.out.println("ID_Lider Nombre Primer_Apellido Segundo_Apellido");
+        try {
+            for(Requerimiento_3 requerimiento : lideresDebenDinero){
+                System.out.println(requerimiento.getIdLider()+ "  " +
+                                   requerimiento.getNombre()+ "  " +
+                                   requerimiento.getPrimerApellido()+ "  " +
+                                   requerimiento.getSegundoApellido());
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+    
+}
